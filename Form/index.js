@@ -22,7 +22,7 @@ const withForm = Component => {
   return Wrapper;
 };
 
-const TextInput = withForm(({ isValid, name, onChange }) => (
+const TextInput = withForm(({ name, onChange }) => (
   <input
     type="text"
     onChange={e => onChange(name, e.target.value)}
@@ -30,7 +30,17 @@ const TextInput = withForm(({ isValid, name, onChange }) => (
   />
 ));
 
-const ContentEditable = withForm(({ isValid, name, onChange }) => (
+const SelectInput = withForm(({ name, children, onChange, defaultValue }) => (
+  <select
+    defaultValue={defaultValue}
+    onChange={e => onChange(name, e.target.value)}
+    name={name}
+  >
+    {children}
+  </select>
+));
+
+const ContentEditable = withForm(({ name, onChange }) => (
   <div contentEditable={true} onInput={e => onChange(name, e.target.innerHTML)}>
     Hello, world!
   </div>
@@ -146,6 +156,17 @@ export default (props: FormProps) => (
           }
           name="lastName"
         />
+
+        <SelectInput
+          validator={({ country }) =>
+            country ? ok() : err(["Must select a country"])
+          }
+          defaultValue=""
+          name="country"
+        >
+          <option value="">--- PLEASE SELECT ---</option>
+          <option value="gb">Great Britain</option>
+        </SelectInput>
 
         {/* <ContentEditable
           validator={({ html }) =>
